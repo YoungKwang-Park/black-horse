@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="qnaMapper">
+
+<!-- 게시판 글 작성 -->
+   <insert id="insert">
+	   INSERT INTO T_QNA(    Q_UID 
+	   						  , Q_CATEGORY
+	   					      , Q_SUBJECT 
+	   					      , Q_CONTENT 
+	   					      , U_ID  )
+	                 VALUES(    T_QNA_SEQ.NEXTVAL
+	                 		  , #{q_category} 
+	                 		  , #{q_subject}
+	                 		  , #{q_content}
+	                 		  , #{u_id}  )
+   
+   </insert>
+
+	<select id="listPage" resultType="com.miracle.fts.DTO.QnaVO" parameterType="com.miracle.fts.DTO.SearchCriteria">
+		SELECT  Q_UID,  
+				Q_CATEGORY,
+		        Q_SUBJECT, 
+		        Q_CONTENT,
+		        U_ID,
+		        Q_VIEWCNT, 
+		        Q_REGDATE
+		 FROM ( 
+		        SELECT Q_UID,
+		               Q_CATEGORY, 
+		               Q_SUBJECT, 
+		               Q_CONTENT, 
+		               U_ID, 
+		               Q_VIEWCNT,
+		               Q_REGDATE, 
+		               ROW_NUMBER() OVER(ORDER BY Q_UID DESC) AS RNUM
+		         FROM T_QNA 
+		          WHERE 1=1 
+		         	<include refid="search"></include> 
+		                       ) 
+		WHERE RNUM BETWEEN #{rowStart} AND #{rowEnd}
+		ORDER BY Q_UID DESC
+	</select>
+	
+	   <!-- 게시물 총 갯수 (쿼리문에 > 연산자가 들어가면 <![CDATA[ ]]> 넣어야됨)  -->
+    <select id="listCount" parameterType="com.miracle.fts.DTO.SearchCriteria" resultType="int">
+	 SELECT COUNT(Q_UID)
+		   FROM T_QNA
+		   WHERE 1=1
+		<include refid="search"></include>	
+		   AND Q_UID > 0	
+	<!-- <![CDATA[
+		SELECT COUNT(Q_UID)
+		  FROM T_QNA
+		 WHERE Q_UID > 0
+	]]> -->
+	
+	</select>
+	
+	
+	
+	<sql id="search">
+		<if test="searchType != null">
+			<if test="searchType == 't'.toString()">AND Q_SUBJECT LIKE '%' || #{keyword} || '%'</if>
+			<if test="searchType == 'c'.toString()">AND Q_CONTENT LIKE '%' || #{keyword} || '%'</if>
+			<if test="searchType == 'tc'.toString()">AND (Q_SUBJECT LIKE '%' || #{keyword} || '%') or (Q_CONTENT LIKE '%' || #{keyword} || '%')</if>
+			<if test="searchType == 'w'.toString()">AND U_ID LIKE '%' || #{keyword} || '%'</if>
+			<if test="searchType == 'g'.toString()">AND Q_CATEGORY LIKE '%' || #{keyword} || '%'</if>
+		</if>
+	</sql>
+	
+	<select id="read" parameterType="int" resultType="com.miracle.fts.DTO.QnaVO">
+		SELECT	Q_UID
+			  , Q_CATEGORY
+			  , Q_SUBJECT
+			  , Q_CONTENT
+			  , U_ID
+			  , Q_REGDATE
+		 FROM T_QNA
+		 WHERE Q_UID = #{q_uid}
+	</select>
+	
+	   <update id="update" parameterType="com.miracle.fts.DTO.QnaVO">
+		UPDATE T_QNA
+		   SET Q_CATEGORY	=	#{q_category},
+		   	   Q_SUBJECT    =   #{q_subject},
+		   	   Q_CONTENT  =   #{q_content}
+		 WHERE Q_UID = #{q_uid} 
+	</update>
+	
+	<delete id="delete" parameterType="int">
+		DELETE 
+		  FROM T_QNA
+		 WHERE Q_UID = #{Q_uid}
+	</delete>
+
+
+	<update id = "viewCnt" parameterType="int">
+	UPDATE T_QNA SET
+	Q_VIEWCNT = Q_VIEWCNT+1
+	WHERE Q_UID = #{q_uid}
+	</update>
+
+
+
+
+
+
+
+</mapper>

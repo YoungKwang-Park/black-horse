@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.miracle.fts.DAO.NoticeDAO">
+
+	<select id="select" resultType="com.miracle.fts.DTO.NoticeDTO">
+		SELECT
+			n_uid "uid",
+			n_subject subject,
+			n_content content,
+			n_viewcnt viewcnt,
+			n_regdate regdate,
+			u_id "id" 
+		FROM
+			t_Notice
+		ORDER BY
+			n_uid DESC
+	</select>
+
+	<!-- view.do -->
+	<select id="selectByUid" resultType="com.miracle.fts.DTO.NoticeDTO">
+		SELECT
+			n_uid "uid", n_subject subject, n_content content, n_viewcnt viewcnt, n_regdate regdate, u_id "id"
+		FROM t_Notice
+		WHERE n_uid = #{uid}
+	</select>
+	
+	<!-- 조회수 증가 -->
+	<update id="incViewCnt" flushCache="true">
+		UPDATE t_Notice
+		SET n_viewcnt = n_viewcnt + 1
+		WHERE n_uid = #{param1}
+	</update>
+	
+ 	<update id="update" flushCache="true"
+		parameterType="com.miracle.fts.DTO.NoticeDTO">
+		UPDATE t_Notice
+		SET n_subject = #{subject}, n_content = #{content}
+		WHERE n_uid = #{uid}
+		</update>		
+		
+		<delete id="deleteByUid" flushCache="true">
+			DELETE FROM t_Notice WHERE n_uid = #{uid}
+		</delete>
+		
+		<select id="searchBySubject"
+			resultType="com.miracle.fts.DTO.NoticeDTO">
+		</select>
+		
+ 	<insert id="insert" flushCache="true"
+ 		parameterType="com.miracle.fts.DTO.NoticeDTO"
+ 		keyProperty="uid" useGeneratedKeys="true" keyColumn="n_uid">
+ 			INSERT INTO t_Notice
+ 				(n_uid, n_subject, n_content, u_id, n_viewcnt)
+ 			VALUES
+ 				(t_notice_seq.nextval, #{subject}, #{content}, #{id}, #{viewcnt})
+ 	</insert>
+
+
+</mapper>

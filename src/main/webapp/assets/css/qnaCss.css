@@ -1,0 +1,299 @@
+@charset "UTF-8";
+
+a, button {
+	color : black;
+}
+
+a:hover{
+	color : lightgrey;
+}
+
+div#root {
+	display : block;
+	width : 100%;
+	position : relative;
+	padding-left : 250px;
+	padding-right : 250px;
+}
+
+.table td, .table th {
+    padding: .75rem;
+    vertical-align: top;
+    border-top: 1px solid #dee2e6;
+    text-align: center;
+}
+.table td{
+	font-size : 14px;
+}
+.jb-th-1 {
+    width: 400px;
+  }
+  
+.jb-th-2, .jb-th-3 {
+    width: 100px;
+  }
+  
+.input-group {
+	position : relative;
+    width: 380px;
+}
+
+button#searchBtn {
+    padding: 15px 20px;
+    margin-left: 3px;
+    margin-top: 2px;
+    height: 30px;
+}
+ .input-group>.form-control {
+    border-radius: 4px;
+    height: 32px;
+    width: 180px;
+    flex : none;	
+    font-size: 14px;
+}
+ .input-group>.form-control:not(:last-child	) {
+    border-radius: 4px;
+    height: 32px;
+    width: 180px;
+    flex : none;	
+}
+div#srow{
+	display: flex;
+    justify-content: center;
+	width : 100%;
+	 margin-top: 40px;
+	margin-left : 0px;
+    text-align: center;
+}
+
+
+ul{
+	justify-content: center; 	
+}
+
+.nice-select {
+    width: 109px;
+	line-height: 23px;
+	height: 32px;
+	float: right;
+	border: solid 1px #797575;
+	margin-right: 5px;
+}
+
+.col-sm-2 {
+ 	padding-right: 0;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.jb-th-2, .jb-th-1, .jb-th-3{
+	font-weight: 600;
+	font-size : 14px;
+}
+.hr1{
+	    border-bottom: 2px solid #9299af;
+    border-top: 0 none;
+    margin: 10px 0 4px 0;
+    padding: 0;
+}
+
+.container {
+    width: 100%;
+    padding-right: 60px;
+    padding-left: 60px;
+    margin-right: auto;
+    margin-left: auto;
+}
+ .col-xs-10.col-sm-10{
+	padding-left : 0;
+	
+}
+
+.pagination {
+    display: -ms-flexbox;
+    display: flex;
+    padding-right: 128px;
+    list-style: none;
+    border-radius: .25rem;
+    margin-top: 25px;
+}
+.nice-select .option.selected.focus {
+    width: 110px;
+    background-color: #f6f6f6;
+    height: 35px;
+}
+
+.nice-select .option {
+	line-height: 30px;
+ width: 110px;
+    background-color: #fff;
+    height: 35px;
+}
+
+.btn{
+	font-weight : 600;
+}
+
+.form-control[readonly] {
+    background-color: #f9f9ff00;
+    opacity: 1;
+    font-size: 14px;
+}
+
+
+.form-group {
+    margin-bottom: 0;
+    width: 100%;
+    font-size : 14px;
+    line-height: 1;
+}
+
+.hr2{
+	margin : 1px 0 20px 0 ;
+	border-bottom: 1px solid #d9dbe2;	
+}
+.form-control-2{
+	    margin-bottom: 0;
+    width: 100%;
+    font-size: 14px;
+	height : 170px;
+	border-color : #d9dbe2;
+	padding: 9px 5px 4px 6px;
+}
+.r_table{
+	width:100%
+}
+.col-sm-2{
+	padding: 10px 0 0 5px;
+    border-bottom:1px solid #dfdbdb00;
+    color: #181818;
+    text-align: left;
+    margin-top: 12px;
+    width: 80px;
+    
+}
+
+.read_th{
+	width:110px;
+	font-size: 14px;
+	padding-left : 5px;
+	    height: 30px;
+}
+.read_td{
+	width:150px;
+	font-size: 14px;
+}
+.read_td_1{
+	width: min-content;
+	font-size: 14px;
+}
+.read_btn{
+	float: right;
+}
+
+.btn{
+padding: 15px 20px;
+    margin-left: 3px;
+    height: 30px;
+    margin:5px;
+}
+.answer_writer{
+	border-color : #fff0;
+	font-weight:600;
+	font-size:18px;
+	width:100%;
+	padding: 5px 0px 8px 10px;
+}
+.answer_box{
+	    border: 1px solid #d9dbe2;
+	        width: 70%;
+	        
+}
+.answer_box_2{
+	    border-color: #fff0;
+	    padding-left: 10px;
+    width: 100%;
+    height : 100px;
+}
+.answer_box_1{
+	padding-left:0;
+}
+.col-sm-offset-2_col-sm-10{
+	margin-right : 252px;
+	
+}
+.answerList{
+    margin-top: 0px;
+    margin-right: 0;
+    width: 85%;
+    padding-left: 0px;
+}
+.hr3{
+	margin-bottom: 3px;
+	margin-top: 48px;
+    border-bottom: 2px solid #bfc4d3;
+}
+.hr4{
+	margin: 0 ;
+    border-bottom: 1px solid #d9dbe2;
+}
+.answer_c{
+	background-color :#96bde52b;
+	padding-left :6px;
+	width:82.5%;
+}
+
+.form-group input[type="radio"] {
+	width : 13px;
+	display : inline-block;
+	    margin-left: 19px;
+    margin-right: 6px;	
+	height: auto;
+}
+
+.radio{
+	height:43px;
+	    line-height: 2;
+}
+
+textarea#q_content{
+	height:160px;
+	line-height:20px;
+}
+button#btn0{
+	font-size: 13px;
+    color: white;
+    background-color: #6787c07d;
+    margin: 4px;
+    width: 65px;	
+}
+button#btn0::before{
+
+    background-color: #3c5aa4;
+  	
+}
+button#btn01{
+	font-size: 13px;
+    color: white;
+    background-color: #6787c0b5;
+    margin: 0;
+    width: 65px;
+    margin-top: 4px;	
+}
+button#btn01::before{
+    background-color: #3c5aa4;
+}
+
+input#u_id{
+	width : 200px;
+}
+p#answer_p{
+	font-size : 12px; margin-bottom:0px; float : right; margin-right: 4px;
+}
+
+<<<<<<< HEAD
+li.option{
+	display:block;
+}
+=======
+>>>>>>> branch 'master' of https://github.com/YoungKwang-Park/Miracle7.git

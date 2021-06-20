@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace = "com.miracle.fts.DAO.StoreDAO">
+					 
+	<select id = "select" resultType="com.miracle.fts.DTO.StoreDTO">	
+		SELECT 
+             s.s_uid "suid",
+             s.s_name sname,
+             s.s_biznum sbiznum,
+             s.s_addr saddr,
+             s.s_comt scomt,
+             s.s_opinfo sopinfo,
+             s.s_lat slat,
+             s.s_lng slng,
+             s.s_pic spic,
+             s.s_thn sthn,
+             s.u_id "uid",
+             (select count(*) FROM T_COMMENT WHERE S_UID = s.S_UID) sccnt
+		FROM t_store s, t_user u 
+		WHERE s.u_id = u.u_id
+		ORDER BY s.s_uid DESC
+	</select>
+
+
+	<insert id="insert" flushCache="true" parameterType = "com.miracle.fts.DTO.StoreDTO"
+		>
+		<selectKey keyProperty="suid" resultType="int" order="BEFORE">
+			SELECT t_store_seq.nextval FROM DUAL
+		</selectKey> 
+		INSERT INTO 
+			t_store (
+			s_uid, 
+			s_name, 
+			s_biznum,
+			s_addr,
+			s_comt,
+			s_opinfo,
+			s_lat,
+			s_lng,
+			u_id)
+		VALUES
+			(#{suid}, #{sname}, #{sbiznum}, #{saddr}, #{scomt}, #{sopinfo}, #{slat}, #{slng}, #{uid})			
+	</insert>
+
+
+	<select id="selectBySuid" resultType="com.miracle.fts.DTO.StoreDTO">
+SELECT 
+			s_uid "suid",
+			s_name sname,
+			s_biznum sbiznum,
+			s_addr saddr,
+			s_comt scomt,
+			s_opinfo sopinfo,
+			s_lat slat,
+			s_lng slng,
+			s_pic spic,
+			s_thn sthn,
+			(select count(*) FROM T_COMMENT WHERE S_UID = s.S_UID) sccnt,
+			(select SUM(C_POINT)/count(*) FROM T_COMMENT WHERE S_UID = s.S_UID) av
+		FROM t_store s
+		where 
+			s_uid = #{suid}	
+	</select>
+
+
+	<update id="update" flushCache="true"
+		parameterType = "com.miracle.fts.DTO.StoreDTO">
+		UPDATE 
+			t_store
+		SET 
+			s_name = #{sname},
+			s_biznum = #{sbiznum},
+			s_addr = #{saddr},
+			s_comt = #{scomt},
+			s_opinfo = #{sopinfo},
+			s_lat = #{slat},
+			s_lng = #{slng},
+			s_pic = #{spic} 
+		WHERE 
+			s_uid = #{suid}		
+	</update>
+	
+	
+
+	<delete id="deleteBySuid" flushCache="true">
+		DELETE 
+		FROM 
+			t_store
+		WHERE 
+			s_uid = #{suid}	
+	</delete>	
+	
+	 
+
+    <select id="listAll" resultType="com.miracle.fts.DTO.StoreDTO">
+        <![CDATA[
+        SELECT
+            s_uid "suid"
+            , s_name sname
+            , uid "uid"
+            , s_ccnt sccnt
+        FROM t_store
+        WHERE s_uid > 0
+        ORDER BY s_uid DESC
+        ]]>
+    </select>
+
+    <select id="listPaging" resultType="com.miracle.fts.DTO.StoreDTO">
+        <![CDATA[
+        SELECT
+            s_uid "suid"
+            , s_name sname
+            , uid "uid"
+            , s_ccnt sccnt
+        FROM t_store
+        WHERE s_uid > 0
+        ORDER BY s_uid DESC
+        LIMIT #{page}, 10
+        ]]>
+    </select>
+
+    <select id="listCriteria" resultType="com.miracle.fts.DTO.StoreDTO">
+        <![CDATA[
+        SELECT
+            s_uid "suid"
+            , s_name sname
+            , uid "uid"
+            , s_ccnt sccnt
+        FROM t_store
+        WHERE s_uid > 0
+        ORDER BY s_uid DESC
+        LIMIT #{pageStart}, #{perPageNum}
+        ]]>
+    </select>
+
+    <select id="countArticles" resultType="int">
+        <![CDATA[
+        SELECT
+            COUNT(s_uid)
+        FROM t_store
+        WHERE s_uid > 0
+        ]]>
+    </select>
+
+	<select id="listSearch" resultType="com.miracle.fts.DTO.StoreDTO">
+        <![CDATA[
+        SELECT
+      		s_uid "suid",
+			s_name sname,
+			s_biznum sbiznum,
+			s_addr saddr,
+			s_comt scomt,
+			s_opinfo sopinfo,
+			s_lat slat,
+			s_lng slng,
+			s_pic spic,
+			s_thn sthn, 
+			s_ccnt sccnt
+        FROM t_store
+        WHERE s_uid > 0
+        ]]>
+          <include refid="search"/>
+        <![CDATA[
+        ORDER BY s_uid DESC, s_name DESC
+        LIMIT #{pageStart}, #{perPageNum}
+        ]]>
+    </select>
+
+    <select id="countSearchedStores" resultType="int">
+        <![CDATA[
+        SELECT
+            COUNT(s_uid)
+        FROM t_store
+        WHERE s_uid > 0
+        ]]>
+        <include refid="search"/>
+    </select>
+
+
+    <update id="updateReplyCnt">
+        UPDATE t_store
+        SET s_ccnt = s_ccnt + #{amount}
+        WHERE s_uid = #{suid}
+    </update>
+
+
+
+    <sql id="search">
+        <if test="searchType != null">
+            <if test="searchType == 't'.toString()">
+                AND title LIKE CONCAT('%', #{keyword}, '%')
+            </if>
+            <if test="searchType == 'c'.toString()">
+                AND content LIKE CONCAT('%', #{keyword}, '%')
+            </if>
+            <if test="searchType == 'w'.toString()">
+                AND writer LIKE CONCAT('%', #{keyword}, '%')
+            </if>
+            <if test="searchType == 'tc'.toString()">
+                AND (
+                    title LIKE CONCAT('%', #{keyword}, '%')
+                    OR content LIKE CONCAT('%', #{keyword}, '%')
+                )
+            </if>
+            <if test="searchType == 'cw'.toString()">
+                AND (
+                    content LIKE CONCAT('%', #{keyword}, '%')
+                    OR writer LIKE CONCAT('%', #{keyword}, '%')
+                )
+            </if>
+            <if test="searchType == 'tcw'.toString()">
+                AND (
+                    title LIKE CONCAT('%', #{keyword}, '%')
+                    OR content LIKE CONCAT('%', #{keyword}, '%')
+                    OR writer LIKE CONCAT('%', #{keyword}, '%')
+                )
+            </if>
+        </if>
+    </sql>
+
+
+
+
+</mapper>
+
+
+
+
+
+
+
+

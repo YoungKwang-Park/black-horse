@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.miracle.fts.DAO.LoginDAO">
+
+	<insert id="insert" flushCache="true">
+		INSERT INTO t_user
+			(u_id, u_pw, u_name, u_addr, u_addr2, u_addr3, u_pn, u_pn2, u_pn3, u_email, u_email2)
+		VALUES
+			(#{id}, #{pw}, #{name}, #{addr}, #{addr2}, #{addr3}, #{pn}, #{pn2}, #{pn3}, #{email}, #{email2})
+	</insert>
+	
+	<insert id="authInsert" flushCache="true">
+		INSERT INTO t_auth VALUES (#{auth}, #{id})
+	</insert>
+	 
+
+	<select id="select" resultType="com.miracle.fts.DTO.LoginDTO">
+		SELECT 
+			u_id id, 
+			u_pw pw, 
+			u_name name, 
+			u_addr addr,
+			u_addr2 addr2, 
+			u_addr3 addr3, 
+			u_email email,
+			u_email2 email2,
+			u_pn pn,
+			u_pn2 pn2,
+			u_pn3 pn3
+		FROM 
+			t_user 
+	</select>
+	
+	<!-- view.do -->
+	<select id="selectById" resultType="com.miracle.fts.DTO.LoginDTO">
+		SELECT 
+			u_id id, u_pw pw, u_name name, 
+			u_addr addr, u_addr2 addr2, u_addr3 addr3, u_pn pn, u_email email, u_email2 email2, u_pn2 pn2, u_pn3 pn3 
+		FROM t_user 
+		WHERE u_id=#{id}
+	</select>
+	
+	<!--   < 조회수 증가 >
+	<update id="incViewCnt" flushCache="true">
+		UPDATE test_write 
+		SET wr_viewcnt = wr_viewcnt + 1 
+		WHERE wr_uid = #{param1}
+	</update>
+          -->
+
+<!-- 
+	<update id="update" flushCache="true" 
+		parameterType="com.lec.sts15_mybatis.domain.WriteDTO">
+		UPDATE test_write 
+		SET wr_subject = #{subject}, wr_content = #{content} 
+		WHERE wr_uid = #{uid}
+	</update>
+ -->
+	<update id="update" flushCache="true" 
+		parameterType="com.miracle.fts.DTO.LoginDTO">
+		UPDATE t_user 
+		SET u_pw = #{pw}, u_addr = #{addr}, u_addr2 = #{addr2}, u_addr3 = #{addr3}, u_pn = #{pn}, u_email = #{email}, u_email2 = #{email2}, u_pn2 = #{pn2}, u_pn3 = #{pn3}  
+		WHERE u_id=#{id}
+	</update>
+	
+	<!-- 아이디 중복 체크 -->
+	<select id="idChk" resultType="int">
+		SELECT COUNT(*) FROM t_user
+		WHERE U_ID = #{id}
+	</select>
+	
+	<!--  
+	<delete id="deleteByUid" flushCache="true">
+		DELETE FROM miracle WHERE m_id = #{id}
+	</delete>
+	-->
+	<!-- 
+	<select id="searchBySubject"
+		resultType="com.lec.sts15_mybatis.domain.WriteDTO">
+	</select>
+	 -->
+
+
+</mapper>

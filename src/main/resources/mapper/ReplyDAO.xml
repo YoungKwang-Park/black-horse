@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="replyMapper">
+
+	<!-- 댓글 조회 
+	<select id="readReply" resultType="com.spring.z_test06.domain.ReplyDTO">
+		select c_uid,c_point,c_content,c_regdate,u_id
+			from t_comment
+			where s_uid = #{s_uid}
+	</select> -->
+
+	
+	<insert id="writeReply">
+		INSERT INTO 
+			t_comment (	
+			    c_uid
+			  ,	s_uid
+			  , c_point
+			  , c_content
+			  , u_id
+	        ) VALUES (
+	        	t_comment_seq.nextval
+	            , #{s_uid}
+	            , #{c_point}
+	            , #{c_content}
+	            , #{u_id}
+	        )			
+	</insert>
+	
+	
+<!-- 
+    <update id="update">
+        UPDATE t_comment
+        SET
+            c_content = #{cctnt}
+            , update_date = sysdate
+        WHERE c_uid = #{cuid}
+    </update>
+ -->
+ 
+	<delete id="deleteReply" parameterType="com.miracle.fts.DTO.ReplyDTO">
+	    DELETE FROM t_comment
+        WHERE c_uid = #{c_uid}	
+	</delete>
+
+	<!-- 선택된 댓글 조회 -->
+ 	<select id="selectReply" resultType="com.miracle.fts.DTO.ReplyDTO">
+ 		SELECT	
+ 			 s_uid
+ 		   , c_uid
+	       , c_point
+	       , c_content
+	       , c_regdate
+	       , u_id
+	     from t_comment
+	     where c_uid = #{c_uid} 
+ 	
+ 	</select>
+
+
+<!--댓길(후기) 페이징 처리 -->
+
+    <select id="readReply" resultType="com.miracle.fts.DTO.ReplyDTO" parameterType="com.miracle.fts.DTO.Criteria">
+        SELECT	
+ 			 s_uid
+ 		   , c_uid	 
+	       , c_point
+	       , c_content
+	       , c_regdate
+	       , u_id 
+        FROM ( 
+       SELECT	
+ 			 s_uid,
+ 		     c_uid, 
+	         c_point,
+	         c_content,
+	         c_regdate,
+	         u_id,
+        	ROW_NUMBER() OVER(ORDER BY c_uid DESC) AS RNUM
+        	FROM T_COMMENT)
+        WHERE RNUM BETWEEN #{rowStart} AND #{rowEnd}
+		ORDER BY c_uid DESC
+    </select>
+
+   <select id="listCount" resultType="int">
+	<![CDATA[
+		SELECT COUNT(s_uid)
+		  FROM t_comment
+		 WHERE s_uid > 0
+	]]>
+	</select>
+
+
+
+<!--
+    <select id="getSuid" resultType="int">
+        SELECT
+            s_uid
+        FROM t_comment
+        WHERE s_uid = #{suid}
+    </select>
+ 					-->
+ 	
+</mapper>
+ 
+ 
+
+
+
+
+
+
+
+
+
+
+
+

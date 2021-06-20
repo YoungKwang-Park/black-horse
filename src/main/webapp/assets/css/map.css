@@ -1,0 +1,5 @@
+@charset "UTF-8";
+.map_1{
+	width: 40%; position: relative; height : 450px; overflow: visible; left: 30%; border: solid 2px red;
+	background-color: black;
+}

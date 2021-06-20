@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.miracle.fts.DAO.StoreFileDAO">
+
+    <insert id="addFile">
+      <selectKey keyProperty="f_uid" resultType="int" order="BEFORE">
+			SELECT t_file_seq.nextval FROM DUAL
+		</selectKey> 
+        INSERT INTO T_FILE (
+        	f_uid,
+        	f_name,
+        	f_sname,
+        	f_url,
+        	f_thurl,
+        	s_uid
+        	) 
+		VALUES (
+			#{f_uid},
+			#{f_name},
+			#{f_sname},
+			#{f_url},
+			#{f_thurl},
+			#{s_uid}
+		)
+    </insert>
+
+
+
+
+<select id="getStoreFile" resultType="com.miracle.fts.DTO.StoreFileDTO">
+	SELECT 
+	    f_uid,
+    	f_name,
+    	f_sname,
+    	f_url,
+    	f_thurl,
+    	s_uid
+	FROM t_file
+	WHERE f_uid = #{fuid}
+</select>
+
+<select id="getStoreFiles" resultType="com.miracle.fts.DTO.StoreFileDTO">
+	SELECT 
+	    f_uid,
+    	f_name,
+    	f_sname,
+    	f_url,
+    	f_thurl,
+    	s_uid
+	FROM t_file a
+	WHERE s_uid = #{s_uid}
+	  AND NOT EXISTS (SELECT * FROM t_store WHERE s_uid = a.s_uid and s_pic = a.f_uid)
+	ORDER BY f_regdate
+</select>
+
+	<delete id="deleteFiles">
+		DELETE FROM t_file
+		WHERE s_uid = #{suid}
+	</delete>
+
+
+	<delete id="deleteFile">
+	    DELETE FROM t_file
+	    WHERE f_name = #{fname}
+	</delete>
+
+
+	<insert id="replaceFile">
+	    INSERT INTO t_file (
+	        f_name
+	        , s_uid
+	    ) VALUES (
+	        #{fname}
+	        , #{suid}
+	    )
+	</insert>
+	
+	<!-- 충돌날꺼같은데...뀨...법규...suid..설정왜이래ㅠㅠ -->
+	<update id="updateFileCnt">
+	    UPDATE t_store
+	    SET s_fileCnt = (
+	        SELECT COUNT(s_uid)
+	        FROM t_file
+	        WHERE s_uid = #{suid}
+	    )
+	    WHERE s_uid = #{suid}
+	</update>
+
+
+</mapper>

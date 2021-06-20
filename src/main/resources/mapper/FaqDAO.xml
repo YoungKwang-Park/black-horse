@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.miracle.fts.DAO.FaqDAO">
+
+	<select id="select" resultType="com.miracle.fts.DTO.FaqDTO">
+		SELECT
+			f_uid "uid",
+			f_subject subject,
+			f_content content,
+			f_viewcnt viewcnt,
+			u_id "id"
+		FROM
+			t_FAQ
+		ORDER BY
+			f_uid DESC
+	</select>
+
+	<!-- view.do -->
+	<select id="selectByUid" resultType="com.miracle.fts.DTO.FaqDTO">
+		SELECT
+			f_uid "uid", f_subject "subject", f_content "content", f_viewcnt "viewcnt", u_id "id"
+		FROM t_FAQ
+		WHERE f_uid = #{uid}
+	</select>
+	
+	<!-- 조회수 증가 -->
+	<update id="incViewCnt" flushCache="true">
+		UPDATE t_FAQ
+		SET f_viewcnt = f_viewcnt + 1
+		WHERE f_uid = #{param1}
+	</update>
+	
+<!-- 
+		update id="update" flushCache="true" 
+			parameterType="com.lec.sts15_mybatis.domain.WriteDTO">
+			UPDATE test_write 
+			SET wr_subject = #{subject}, wr_content = #{content} 
+			WHERE wr_uid = #{uid}
+	</update>
+ -->
+ 	<update id="update" flushCache="true"
+		parameterType="com.miracle.fts.DTO.FaqDTO">
+		UPDATE t_FAQ
+		SET f_subject = #{a.subject}, f_content = #{a.content}
+		WHERE f_uid = #{param1}
+		</update>		
+		
+		<delete id="deleteByUid" flushCache="true">
+			DELETE FROM t_FAQ WHERE f_uid = #{uid}
+		</delete>
+		
+		<select id="searchBySubject"
+			resultType="com.miracle.fts.DTO.FaqDTO">
+		</select>
+		
+		<!-- 매퍼파일에
+	keyProperty="uid" useGeneratedKeys="true" keyColumn="wr_uid" 명시하면
+	generated 된 key 값을 dto 에 받아올수 있다!
+ 	--> 
+ 	<insert id="insert" flushCache="true"
+ 		parameterType="com.miracle.fts.DTO.FaqDTO"
+ 		keyProperty="uid" useGeneratedKeys="true" keyColumn="f_uid">
+ 			INSERT INTO t_FAQ
+ 				(f_uid, f_subject, f_content, u_id, f_viewcnt)
+ 			VALUES
+ 				(t_FAQ_seq.nextval, #{subject}, #{content}, #{id}, #{viewcnt})
+ 	</insert>
+
+
+</mapper>

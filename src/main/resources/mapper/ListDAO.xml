@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="listMapper">
+
+	<select id="select" resultType="com.miracle.fts.DTO.ListDTO" parameterType="com.miracle.fts.DTO.SearchCriteria"> 
+		SELECT
+			s_uid, 
+			s_name, 
+			s_biznum, 
+			s_addr, 
+			s_comt, 
+			s_opinfo, 
+			m_uid, 
+			m_name 
+	FROM (
+		SELECT	
+			s.s_uid, 
+			s_name, 
+			s_biznum, 
+			s_addr, 
+			s_comt, 
+			s_opinfo, 
+			m_uid, 
+			m_name,
+			ROW_NUMBER() OVER(PARTITION BY s.S_UID ORDER BY s.S_UID DESC) AS RNUM				
+		FROM t_store s, T_MENU m
+		WHERE 1=1 AND s.s_uid = m.s_uid
+		<include refid="search"></include> 
+		                       ) 
+		WHERE RNUM BETWEEN #{rowStart} AND #{rowEnd}
+		ORDER BY s_uid DESC
+	</select>
+	
+	
+	<select id="selectCount" parameterType="com.miracle.fts.DTO.SearchCriteria" resultType="int">
+		SELECT count(s.s_uid)
+			from t_store s, t_menu m
+			where 1=1 AND s.s_uid = m.s_uid
+		<include refid="search"></include>	
+		 	AND s.s_uid > 0
+		<!--   <![CDATA[
+		SELECT COUNT(s_uid)
+		  FROM t_store
+		 WHERE s_uid > 0
+	  ]]> -->
+	</select>
+	
+	<sql id="search">
+		<if test="searchType != null">
+			<if test="searchType == 't'.toString()">AND s.s_name LIKE '%' || #{keyword} || '%'</if>
+			<if test="searchType == 'c'.toString()">AND m.m_name LIKE '%' || #{keyword} || '%'</if>
+			<if test="searchType == 'tc'.toString()">AND (s.s_name LIKE '%' || #{keyword} || '%') or (m.m_name LIKE '%' || #{keyword} || '%')</if>
+		</if>
+	</sql>
+	
+
+</mapper>
